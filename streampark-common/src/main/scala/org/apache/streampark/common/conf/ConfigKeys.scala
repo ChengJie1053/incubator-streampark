@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.streampark.common.conf
 
 object ConfigKeys {
@@ -40,6 +41,8 @@ object ConfigKeys {
   /** kerberos */
   val KEY_KERBEROS = "kerberos"
 
+  val KEY_KERBEROS_SERVICE_ACCOUNT = "kubernetes.service-account"
+
   val KEY_HADOOP_USER_NAME = "HADOOP_USER_NAME"
 
   /** hadoop.security.authentication */
@@ -63,13 +66,17 @@ object ConfigKeys {
   val KEY_SPARK_BATCH_DURATION = "spark.batch.duration"
 
   /** about config flink */
-  def KEY_APP_CONF(prefix: String = null): String = s"${Option(prefix).getOrElse("")}conf"
+  def KEY_APP_CONF(prefix: String = null): String =
+    s"${Option(prefix).getOrElse("")}conf"
 
-  def KEY_FLINK_CONF(prefix: String = null): String = s"${Option(prefix).getOrElse("")}flink.conf"
+  def KEY_FLINK_CONF(prefix: String = null): String =
+    s"${Option(prefix).getOrElse("")}flink.conf"
 
-  def KEY_APP_NAME(prefix: String = null): String = s"${Option(prefix).getOrElse("")}app.name"
+  def KEY_APP_NAME(prefix: String = null): String =
+    s"${Option(prefix).getOrElse("")}app.name"
 
-  def KEY_FLINK_SQL(prefix: String = null): String = s"${Option(prefix).getOrElse("")}sql"
+  def KEY_FLINK_SQL(prefix: String = null): String =
+    s"${Option(prefix).getOrElse("")}sql"
 
   def KEY_FLINK_PARALLELISM(prefix: String = null): String =
     s"${Option(prefix).getOrElse("")}parallelism.default"
@@ -79,6 +86,8 @@ object ConfigKeys {
   val KEY_FLINK_PROPERTY_PREFIX = "flink.property."
 
   val KEY_FLINK_TABLE_PREFIX = "flink.table."
+
+  val KEY_SPARK_PROPERTY_PREFIX = "spark.property."
 
   val KEY_APP_PREFIX = "app."
 

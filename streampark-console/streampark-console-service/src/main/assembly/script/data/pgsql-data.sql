@@ -25,7 +25,11 @@ insert into "public"."t_team" values (100000, 'default', null, now(), now());
 -- ----------------------------
 -- Records of t_flink_app
 -- ----------------------------
-insert into "public"."t_flink_app" values (100000, 100000, 2, 4, null, null, 'Flink SQL Demo', null, null, null, null, null, null , null, 100000, null, 1, null, null, null, null, null, null, null, null, 0, 0, null, null, null, null, null, null, 'Flink SQL Demo', 0, null, null, null, null, null, null, null, 0, 0, now(), now(), null, 1, true, null, null, null, null, null, null, false, null, null, null, 'streampark,test', false, null);
+INSERT INTO "public"."t_flink_app" (
+    "id", "team_id", "job_type", "execution_mode", "job_name", "user_id", "app_type", "state", "restart_size",
+    "description", "resolve_order", "option_state", "tracking", "create_time", "modify_time", "release", "build",
+    "k8s_hadoop_integration", "tags"
+) VALUES (100000, 100000, 2, 4, 'Flink SQL Demo', 100000, 1, 0, 0, 'Flink SQL Demo', 0, 0, 0, now(), now(), 1, true, false, 'streampark,test');
 
 -- ----------------------------
 -- Records of t_flink_effective
@@ -35,7 +39,7 @@ insert into "public"."t_flink_effective" values (100000, 100000, 2, 100000, now(
 -- ----------------------------
 -- Records of t_flink_project
 -- ----------------------------
-insert into "public"."t_flink_project" values (100000, 100000, 'streampark-quickstart', 'https://github.com/apache/incubator-streampark-quickstart', 'release-2.0.0', null, null, null, null, null, 1, 1, null, 'streampark-quickstart', -1, now(), now());
+insert into "public"."t_flink_project" values (100000, 100000, 'streampark-quickstart', 'https://github.com/apache/incubator-streampark-quickstart', 'release-2.0.0', null, null, null, null, null, null, 1, 1, null, 'streampark-quickstart', -1, now(), now());
 
 
 -- ----------------------------
@@ -59,12 +63,12 @@ insert into "public"."t_menu" values (120100, 120000, 'menu.project', '/flink/pr
 insert into "public"."t_menu" values (120200, 120000, 'menu.application', '/flink/app', 'flink/app/View', null, 'mobile', '0', '1', 2, now(), now());
 insert into "public"."t_menu" values (120300, 120000, 'menu.variable', '/flink/variable', 'flink/variable/View', null, 'code', '0', '1', 3, now(), now());
 insert into "public"."t_menu" values (120400, 120000, 'menu.resource', '/flink/resource', 'flink/resource/View', null, 'apartment', '0', '1', 3, now(), now());
-insert into "public"."t_menu" values (130100, 130000, 'setting.system', '/setting/system', 'setting/System/index', null, 'database', '0', '1', 1, now(), now());
-insert into "public"."t_menu" values (130200, 130000, 'setting.alarm', '/setting/alarm', 'setting/Alarm/index', null, 'alert', '0', '1', 2, now(), now());
+insert into "public"."t_menu" values (130100, 130000, 'setting.system', '/setting/system', 'setting/system/View', null, 'database', '0', '1', 1, now(), now());
+insert into "public"."t_menu" values (130200, 130000, 'setting.alarm', '/setting/alarm', 'setting/alarm/View', null, 'alert', '0', '1', 2, now(), now());
 insert into "public"."t_menu" values (130300, 130000, 'setting.flinkHome', '/setting/flinkHome', 'setting/FlinkHome/index', null, 'desktop', '0', '1', 3, now(), now());
 insert into "public"."t_menu" values (130400, 130000, 'setting.flinkCluster', '/setting/flinkCluster', 'setting/FlinkCluster/index', 'menu:view', 'cluster', '0', '1', 4, now(), now());
 insert into "public"."t_menu" values (130500, 130000, 'setting.externalLink', '/setting/externalLink', 'setting/ExternalLink/index', 'menu:view', 'link', '0', '1', 5, now(), now());
-insert into "public"."t_menu" values (130600, 130000, 'setting.yarnQueue', '/setting/yarnQueue', 'setting/YarnQueue/index', 'menu:view', 'bars', '0', '1', 6, now(), now());
+insert into "public"."t_menu" values (130600, 130000, 'setting.yarnQueue', '/setting/yarnQueue', 'setting/yarnQueue/View', 'menu:view', 'bars', '0', '1', 6, now(), now());
 insert into "public"."t_menu" values (110101, 110100, 'add', null, null, 'user:add', null, '1', '1', null, now(), now());
 insert into "public"."t_menu" values (110102, 110100, 'update', null, null, 'user:update', null, '1', '1', null, now(), now());
 insert into "public"."t_menu" values (110103, 110100, 'delete', null, null, 'user:delete', null, '1', '1', null, now(), now());
@@ -87,10 +91,10 @@ insert into "public"."t_menu" values (110602, 110600, 'update', null, null, 'mem
 insert into "public"."t_menu" values (110603, 110600, 'delete', null, null, 'member:delete', null, '1', '1', null, now(), now());
 insert into "public"."t_menu" values (110604, 110600, 'role view', null, null, 'role:view', null, '1', '1', null, now(), now());
 insert into "public"."t_menu" values (110605, 110600, 'view', null, null, 'member:view', null, '1', '1', null, now(), now());
-insert into "public"."t_menu" values (120101, 120100, 'add', '/flink/project/add', 'flink/project/Add', 'project:create', '', '0', '0', null, now(), now());
+insert into "public"."t_menu" values (120101, 120100, 'add', '/flink/project/add', 'resource/project/Add', 'project:create', '', '0', '0', null, now(), now());
 insert into "public"."t_menu" values (120102, 120100, 'build', null, null, 'project:build', null, '1', '1', null, now(), now());
 insert into "public"."t_menu" values (120103, 120100, 'delete', null, null, 'project:delete', null, '1', '1', null, now(), now());
-insert into "public"."t_menu" values (120104, 120100, 'edit', '/flink/project/edit', 'flink/project/Edit', 'project:update', null, '0', '0', null, now(), now());
+insert into "public"."t_menu" values (120104, 120100, 'edit', '/flink/project/edit', 'resource/project/Edit', 'project:update', null, '0', '0', null, now(), now());
 insert into "public"."t_menu" values (120105, 120100, 'view', null, null, 'project:view', null, '1', '1', null, now(), now());
 insert into "public"."t_menu" values (120201, 120200, 'add', '/flink/app/add', 'flink/app/Add', 'app:create', '', '0', '0', null, now(), now());
 insert into "public"."t_menu" values (120202, 120200, 'detail app', '/flink/app/detail', 'flink/app/Detail', 'app:detail', '', '0', '0', null, now(), now());

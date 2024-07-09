@@ -20,6 +20,8 @@ package org.apache.streampark.console.base.config;
 import org.apache.streampark.console.base.mybatis.interceptor.PostgreSQLPrepareInterceptor;
 import org.apache.streampark.console.base.mybatis.interceptor.PostgreSQLQueryInterceptor;
 
+import org.apache.ibatis.mapping.DatabaseIdProvider;
+import org.apache.ibatis.mapping.VendorDatabaseIdProvider;
 import org.apache.ibatis.type.JdbcType;
 
 import com.baomidou.mybatisplus.annotation.IdType;
@@ -34,60 +36,74 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Properties;
+
 /** for MyBatis Configure management. */
 @Configuration
 @MapperScan(value = {"org.apache.streampark.console.*.mapper"})
 public class MybatisConfig {
 
-  @Bean
-  public MybatisPlusInterceptor mybatisPlusInterceptor() {
-    MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
-    interceptor.addInnerInterceptor(new PaginationInnerInterceptor());
-    return interceptor;
-  }
+    @Bean
+    public MybatisPlusInterceptor mybatisPlusInterceptor() {
+        MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
+        interceptor.addInnerInterceptor(new PaginationInnerInterceptor());
+        return interceptor;
+    }
 
-  /**
-   * Add the plugin to the MyBatis plugin interceptor chain.
-   *
-   * @return {@linkplain PostgreSQLQueryInterceptor}
-   */
-  @Bean
-  @ConditionalOnProperty(name = "spring.profiles.active", havingValue = "pgsql")
-  public PostgreSQLQueryInterceptor postgreSQLQueryInterceptor() {
-    return new PostgreSQLQueryInterceptor();
-  }
+    /**
+     * Add the plugin to the MyBatis plugin interceptor chain.
+     *
+     * @return {@linkplain PostgreSQLQueryInterceptor}
+     */
+    @Bean
+    @ConditionalOnProperty(name = "datasource.dialect", havingValue = "pgsql")
+    public PostgreSQLQueryInterceptor postgreSQLQueryInterceptor() {
+        return new PostgreSQLQueryInterceptor();
+    }
 
-  /**
-   * Add the plugin to the MyBatis plugin interceptor chain.
-   *
-   * @return {@linkplain PostgreSQLPrepareInterceptor}
-   */
-  @Bean
-  @ConditionalOnProperty(name = "spring.profiles.active", havingValue = "pgsql")
-  public PostgreSQLPrepareInterceptor postgreSQLPrepareInterceptor() {
-    return new PostgreSQLPrepareInterceptor();
-  }
+    /**
+     * Add the plugin to the MyBatis plugin interceptor chain.
+     *
+     * @return {@linkplain PostgreSQLPrepareInterceptor}
+     */
+    @Bean
+    @ConditionalOnProperty(name = "datasource.dialect", havingValue = "pgsql")
+    public PostgreSQLPrepareInterceptor postgreSQLPrepareInterceptor() {
+        return new PostgreSQLPrepareInterceptor();
+    }
 
-  /**
-   * mybatis plus setting
-   *
-   * @return MybatisPlusPropertiesCustomizer
-   */
-  @Bean
-  public MybatisPlusPropertiesCustomizer mybatisPlusPropertiesCustomizer() {
-    return properties -> {
-      properties.setTypeAliasesPackage("org.apache.streampark.console.*.entity");
-      properties.setTypeEnumsPackage("org.apache.streampark.console.*.enums");
-      properties.setMapperLocations(new String[] {"classpath:mapper/*/*.xml"});
-      MybatisConfiguration mybatisConfiguration = new MybatisConfiguration();
-      mybatisConfiguration.setJdbcTypeForNull(JdbcType.NULL);
-      properties.setConfiguration(mybatisConfiguration);
-      GlobalConfig globalConfig = GlobalConfigUtils.getGlobalConfig(mybatisConfiguration);
-      GlobalConfig.DbConfig dbConfig = globalConfig.getDbConfig();
-      dbConfig.setIdType(IdType.AUTO);
-      // close mybatis-plus banner
-      globalConfig.setBanner(false);
-      properties.setGlobalConfig(globalConfig);
-    };
-  }
+    /**
+     * mybatis plus setting
+     *
+     * @return MybatisPlusPropertiesCustomizer
+     */
+    @Bean
+    public MybatisPlusPropertiesCustomizer mybatisPlusPropertiesCustomizer() {
+        return properties -> {
+            properties.setTypeAliasesPackage("org.apache.streampark.console.*.entity");
+            properties.setTypeEnumsPackage("org.apache.streampark.console.*.enums");
+            properties.setMapperLocations(new String[]{"classpath:mapper/*/*.xml"});
+            MybatisConfiguration mybatisConfiguration = new MybatisConfiguration();
+            mybatisConfiguration.setJdbcTypeForNull(JdbcType.NULL);
+            properties.setConfiguration(mybatisConfiguration);
+            GlobalConfig globalConfig = GlobalConfigUtils.getGlobalConfig(mybatisConfiguration);
+            GlobalConfig.DbConfig dbConfig = globalConfig.getDbConfig();
+            dbConfig.setIdType(IdType.AUTO);
+            // close mybatis-plus banner
+            globalConfig.setBanner(false);
+            properties.setGlobalConfig(globalConfig);
+        };
+    }
+
+    @Bean
+    public DatabaseIdProvider databaseIdProvider() {
+        VendorDatabaseIdProvider databaseIdProvider = new VendorDatabaseIdProvider();
+        Properties properties = new Properties();
+        properties.put("MySQL", "mysql");
+        // h2 is also used as the processing strategy for MySQL
+        properties.setProperty("H2", "mysql");
+        properties.setProperty("PostgreSQL", "pgsql");
+        databaseIdProvider.setProperties(properties);
+        return databaseIdProvider;
+    }
 }

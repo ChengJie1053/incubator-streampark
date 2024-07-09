@@ -23,9 +23,8 @@ class CommandUtilsTest extends AnyFunSuite {
 
   test("execute single command") {
     val (exitCode, output) = CommandUtils.execute("echo Hello")
-    println(s"Exit code: $exitCode")
-    println(s"Output:\n$output")
     assert(exitCode == 0)
+    assert(output == "Hello\n")
   }
 
   test("execute multiple commands") {
@@ -34,10 +33,11 @@ class CommandUtilsTest extends AnyFunSuite {
     commands.add("echo 'Hello'")
     commands.add("echo 'World'")
     val outputConsumer = new java.util.function.Consumer[String] {
+      // scalastyle:off println
       override def accept(output: String): Unit = println(output)
+      // scalastyle:on println
     }
     val exitCode = CommandUtils.execute(directory, commands, outputConsumer)
-    println(s"Exit code: $exitCode")
     assert(exitCode == 0)
   }
 }

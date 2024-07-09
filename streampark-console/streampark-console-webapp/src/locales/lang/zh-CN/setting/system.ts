@@ -30,7 +30,7 @@ export default {
       name: '控制台配置',
     },
     ingressSetting: {
-      name: 'k8s Ingress 配置',
+      name: 'Kubernetes Ingress 配置',
     },
   },
   update: {
@@ -64,7 +64,7 @@ export default {
       label: 'Docker 命名空间',
       desc: 'Docker 构建环境和目标镜像注册使用的命名空间',
     },
-    userName: {
+    username: {
       label: 'Docker 用户名',
       desc: 'Docker 容器服务认证用户名',
     },

@@ -23,33 +23,31 @@ import org.apache.streampark.common.util.Logger
 import io.fabric8.kubernetes.client.DefaultKubernetesClient
 import org.apache.flink.client.program.ClusterClient
 
-import scala.language.postfixOps
-
 object IngressController extends Logger {
 
   private[this] val VERSION_REGEXP = "(\\d+\\.\\d+)".r
 
+  private lazy val clusterVersion = new DefaultKubernetesClient().autoClose(client => {
+    VERSION_REGEXP.findFirstIn(client.getVersion.getGitVersion).get.toDouble
+  })
+
   private lazy val ingressStrategy: IngressStrategy = {
-    new DefaultKubernetesClient().autoClose(
-      client => {
-        val version = VERSION_REGEXP.findFirstIn(client.getVersion.getGitVersion).get.toDouble
-        if (version >= 1.19) {
-          new IngressStrategyV1()
-        } else {
-          new IngressStrategyV1beta1()
-        }
-      })
+    if (clusterVersion >= 1.19) {
+      new IngressStrategyV1()
+    } else {
+      new IngressStrategyV1beta1()
+    }
   }
 
   def configureIngress(domainName: String, clusterId: String, nameSpace: String): Unit = {
     ingressStrategy.configureIngress(domainName, clusterId, nameSpace)
   }
 
-  def ingressUrlAddress(
+  def getIngressUrlAddress(
       nameSpace: String,
       clusterId: String,
       clusterClient: ClusterClient[_]): String = {
-    ingressStrategy.ingressUrlAddress(nameSpace, clusterId, clusterClient)
+    ingressStrategy.getIngressUrl(nameSpace, clusterId, clusterClient)
   }
 
   def prepareIngressTemplateFiles(buildWorkspace: String, ingressTemplates: String): String = {

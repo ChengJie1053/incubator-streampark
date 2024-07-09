@@ -14,8 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.streampark.common.util
 
+import org.apache.streampark.common.conf.{CommonConfig, InternalConfigHolder}
+import org.apache.streampark.common.conf.ConfigKeys._
 import org.apache.streampark.common.fs.LfsOperator
 
 import org.apache.commons.io.{FileUtils => ApacheFileUtils}
@@ -32,10 +35,30 @@ import scala.util.{Failure, Success, Try}
 /** Hadoop client configuration tools mainly for flink use. */
 object HadoopConfigUtils {
 
-  private[this] val HADOOP_CLIENT_CONF_FILES: Array[String] =
+  private[this] lazy val kerberosConf: Map[String, String] =
+    System.getProperties.filter(_._1.startsWith("security.kerberos")).toMap
+
+  lazy val hadoopUserName: String =
+    InternalConfigHolder.get(CommonConfig.STREAMPARK_HADOOP_USER_NAME)
+
+  lazy val kerberosDebug =
+    kerberosConf.getOrElse(KEY_SECURITY_KERBEROS_DEBUG, "false")
+
+  lazy val kerberosEnable =
+    kerberosConf.getOrElse(KEY_SECURITY_KERBEROS_ENABLE, "false").toBoolean
+
+  lazy val kerberosPrincipal =
+    kerberosConf.getOrElse(KEY_SECURITY_KERBEROS_PRINCIPAL, "").trim
+
+  val kerberosKeytab =
+    kerberosConf.getOrElse(KEY_SECURITY_KERBEROS_KEYTAB, "").trim
+
+  val kerberosKrb5 = kerberosConf.getOrElse(KEY_SECURITY_KERBEROS_KRB5_CONF, "")
+
+  private val HADOOP_CLIENT_CONF_FILES: Array[String] =
     Array("core-site.xml", "hdfs-site.xml", "yarn-site.xml")
 
-  private[this] val HIVE_CLIENT_CONF_FILES: Array[String] =
+  private val HIVE_CLIENT_CONF_FILES: Array[String] =
     Array("core-site.xml", "hdfs-site.xml", "hive-site.xml")
 
   /** Get Hadoop configuration directory path from system. */
@@ -111,27 +134,29 @@ object HadoopConfigUtils {
   /** Read system hadoop config to Map */
   def readSystemHadoopConf: JavaMap[String, String] =
     getSystemHadoopConfDir
-      .map(
-        confDir =>
-          LfsOperator
-            .listDir(confDir)
-            .filter(f => HADOOP_CLIENT_CONF_FILES.contains(f.getName))
-            .map(f => f.getName -> ApacheFileUtils.readFileToString(f, StandardCharsets.UTF_8))
-            .toMap
-            .asJava)
+      .map(confDir =>
+        LfsOperator
+          .listDir(confDir)
+          .filter(f => HADOOP_CLIENT_CONF_FILES.contains(f.getName))
+          .map(f =>
+            f.getName -> ApacheFileUtils
+              .readFileToString(f, StandardCharsets.UTF_8))
+          .toMap
+          .asJava)
       .getOrElse(Collections.emptyMap[String, String]())
 
   /** Read system hive config to Map */
   def readSystemHiveConf: JavaMap[String, String] = {
     getSystemHiveConfDir
-      .map(
-        confDir =>
-          LfsOperator
-            .listDir(confDir)
-            .filter(f => HIVE_CLIENT_CONF_FILES.contains(f.getName))
-            .map(f => f.getName -> ApacheFileUtils.readFileToString(f, StandardCharsets.UTF_8))
-            .toMap
-            .asJava)
+      .map(confDir =>
+        LfsOperator
+          .listDir(confDir)
+          .filter(f => HIVE_CLIENT_CONF_FILES.contains(f.getName))
+          .map(f =>
+            f.getName -> ApacheFileUtils
+              .readFileToString(f, StandardCharsets.UTF_8))
+          .toMap
+          .asJava)
       .getOrElse(Collections.emptyMap[String, String]())
 
   }

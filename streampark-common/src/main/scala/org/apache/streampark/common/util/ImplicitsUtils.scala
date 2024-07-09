@@ -14,11 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.streampark.common.util
 
 import org.apache.streampark.common.util.Utils.close
 
 import java.lang.{Boolean => JavaBool, Byte => JavaByte, Double => JavaDouble, Float => JavaFloat, Integer => JavaInt, Long => JavaLong, Short => JavaShort}
+
+import scala.language.implicitConversions
 
 object ImplicitsUtils {
 
@@ -50,9 +53,12 @@ object ImplicitsUtils {
         case c if c == classOf[JavaByte] => v.toByte.asInstanceOf[T]
         case c if c == classOf[JavaInt] => JavaInt.valueOf(v).asInstanceOf[T]
         case c if c == classOf[JavaLong] => JavaLong.valueOf(v).asInstanceOf[T]
-        case c if c == classOf[JavaFloat] => JavaFloat.valueOf(v).asInstanceOf[T]
-        case c if c == classOf[JavaDouble] => JavaDouble.valueOf(v).asInstanceOf[T]
-        case c if c == classOf[JavaShort] => JavaShort.valueOf(v).asInstanceOf[T]
+        case c if c == classOf[JavaFloat] =>
+          JavaFloat.valueOf(v).asInstanceOf[T]
+        case c if c == classOf[JavaDouble] =>
+          JavaDouble.valueOf(v).asInstanceOf[T]
+        case c if c == classOf[JavaShort] =>
+          JavaShort.valueOf(v).asInstanceOf[T]
         case c if c == classOf[JavaBool] => JavaBool.valueOf(v).asInstanceOf[T]
         case _ =>
           throw new IllegalArgumentException(s"Unsupported type: $classType")

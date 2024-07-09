@@ -35,7 +35,8 @@ case class DeployRequest(
     properties: JavaMap[String, Any],
     clusterId: String,
     id: Long,
-    @Nullable k8sDeployParam: KubernetesDeployParam) {
+    @Nullable k8sParam: KubernetesDeployParam)
+  extends DeployRequestTrait {
 
   private[client] lazy val hdfsWorkspace = {
 
@@ -59,8 +60,7 @@ case class DeployRequest(
       flinkPlugins = s"$flinkHdfsHome/plugins",
       flinkDistJar = FlinkUtils.getFlinkDistJar(flinkHome),
       appJars = workspace.APP_JARS,
-      appPlugins = workspace.APP_PLUGINS
-    )
+      appPlugins = workspace.APP_PLUGINS)
   }
 }
 

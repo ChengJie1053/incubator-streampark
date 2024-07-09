@@ -19,6 +19,7 @@ package org.apache.streampark.console.system.authentication;
 
 import org.apache.streampark.common.util.DateUtils;
 import org.apache.streampark.console.SpringUnitTestBase;
+import org.apache.streampark.console.core.enums.AuthenticationType;
 import org.apache.streampark.console.system.entity.AccessToken;
 
 import com.auth0.jwt.JWT;
@@ -30,20 +31,20 @@ import java.util.TimeZone;
 
 class JWTTest extends SpringUnitTestBase {
 
-  @Test
-  void testExpireTime() {
-    String userName = "black";
-    String expireTime = AccessToken.DEFAULT_EXPIRE_TIME;
-    String token =
-        JWTUtil.sign(
+    @Test
+    void testExpireTime() {
+        String userName = "black";
+        String expireTime = AccessToken.DEFAULT_EXPIRE_TIME;
+        String token = JWTUtil.sign(
             10000L,
             userName,
+            "streampark",
+            AuthenticationType.SIGN,
             DateUtils.getTime(expireTime, DateUtils.fullFormat(), TimeZone.getDefault()));
 
-    assert token != null;
-    Date expiresAt = JWT.decode(token).getExpiresAt();
-    String decodeExpireTime =
-        DateUtils.format(expiresAt, DateUtils.fullFormat(), TimeZone.getDefault());
-    Assertions.assertEquals(expireTime, decodeExpireTime);
-  }
+        assert token != null;
+        Date expiresAt = JWT.decode(token).getExpiresAt();
+        String decodeExpireTime = DateUtils.format(expiresAt, DateUtils.fullFormat(), TimeZone.getDefault());
+        Assertions.assertEquals(expireTime, decodeExpireTime);
+    }
 }

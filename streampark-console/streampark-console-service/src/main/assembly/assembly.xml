@@ -31,6 +31,7 @@
             <outputDirectory>lib</outputDirectory>
             <excludes>
                 <exclude>org.apache.streampark:streampark-flink-sqlclient_${scala.binary.version}</exclude>
+                <exclude>org.apache.streampark:streampark-spark-sqlclient_${scala.binary.version}</exclude>
                 <exclude>javax.servlet:servlet-api</exclude>
             </excludes>
         </dependencySet>
@@ -38,6 +39,7 @@
             <outputDirectory>client</outputDirectory>
             <includes>
                 <include>org.apache.streampark:streampark-flink-sqlclient_${scala.binary.version}</include>
+                <include>org.apache.streampark:streampark-spark-sqlclient_${scala.binary.version}</include>
             </includes>
         </dependencySet>
     </dependencySets>
@@ -62,6 +64,12 @@
         <fileSet>
             <directory>${project.build.directory}/shims</directory>
             <outputDirectory>lib</outputDirectory>
+            <fileMode>0755</fileMode>
+        </fileSet>
+        <fileSet>
+            <directory>${project.build.directory}/../src/main/assembly/conf</directory>
+            <outputDirectory>conf</outputDirectory>
+            <lineEnding>unix</lineEnding>
             <fileMode>0755</fileMode>
         </fileSet>
         <fileSet>
@@ -101,9 +109,7 @@
             <lineEnding>unix</lineEnding>
             <fileMode>0755</fileMode>
             <includes>
-                <include>*.yml</include>
-                <include>*.properties</include>
-                <include>logback*.xml</include>
+                <include>logback-spring.xml</include>
             </includes>
         </fileSet>
         <fileSet>

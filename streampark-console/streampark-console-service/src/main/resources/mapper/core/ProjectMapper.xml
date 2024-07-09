@@ -82,12 +82,20 @@
         <where>
             t.team_id = #{project.teamId}
             <if test="project.name != null and project.name != ''">
-                and t.name like concat('%', '${project.name}', '%')
+                <if test="_databaseId == 'mysql'">
+                    and t.name like concat('%', #{project.name},'%')
+                </if>
+                <if test="_databaseId == 'pgsql'">
+                    and t.name like '%' || #{project.name} || '%'
+                </if>
             </if>
             <if test="project.buildState != null">
                 and t.build_state = #{project.buildState}
             </if>
         </where>
+    </select>
+    <select id="getBuildingCount" resultType="java.lang.Long">
+        select count(1) from t_flink_project where build_state = 0
     </select>
 
 </mapper>

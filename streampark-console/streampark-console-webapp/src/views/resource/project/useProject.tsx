@@ -70,8 +70,8 @@ export const useProject = () => {
         componentProps: {
           placeholder: t('flink.project.form.projectTypePlaceholder'),
           options: [
-            { label: 'apache flink', value: ProjectTypeEnum.FLINK, disabled: false },
-            { label: 'apache spark', value: ProjectTypeEnum.SPARK, disabled: true },
+            { label: 'Apache Flink', value: ProjectTypeEnum.FLINK, disabled: false },
+            { label: 'Apache Spark', value: ProjectTypeEnum.SPARK, disabled: true },
           ],
           showSearch: true,
           optionFilterProp: 'children',
@@ -244,6 +244,7 @@ export const useProject = () => {
         userName: values.userName || null,
         password: values.password || null,
         prvkeyPath: values.prvkeyPath || null,
+        id: route?.query?.id || null,
       });
       if (res === 0) {
         if (branchList.value.length === 0) {
@@ -282,8 +283,9 @@ export const useProject = () => {
         const prvkeyPath = values.prvkeyPath || null;
         const userNull = userName === null || userName === undefined || userName === '';
         const passNull = password === null || password === undefined || password === '';
+        const id = route?.query?.id || null;
         if ((userNull && passNull) || (!userNull && !passNull)) {
-          const res = await fetchBranches({ url, userName, password, prvkeyPath });
+          const res = await fetchBranches({ url, userName, password, prvkeyPath, id });
           if (res) branchList.value = res.map((i) => ({ label: i, value: i }));
         }
       }

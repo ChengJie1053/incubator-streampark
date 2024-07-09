@@ -24,7 +24,6 @@ import org.apache.streampark.flink.packer.pipeline._
 
 import java.io.File
 
-import scala.collection.JavaConverters._
 import scala.collection.convert.ImplicitConversions._
 
 /** Building pipeline for flink standalone session mode */
@@ -65,7 +64,8 @@ class FlinkRemoteBuildPipeline(request: FlinkRemotePerJobBuildRequest) extends B
         execStep(3) {
           request.developmentMode match {
             case FlinkDevelopmentMode.PYFLINK =>
-              val mavenArts = MavenTool.resolveArtifacts(request.dependencyInfo.mavenArts.asJava)
+              val mavenArts =
+                MavenTool.resolveArtifacts(request.dependencyInfo.mavenArts)
               mavenArts.map(_.getAbsolutePath) ++ request.dependencyInfo.extJarLibs
             case _ => List[String]()
           }
@@ -74,17 +74,16 @@ class FlinkRemoteBuildPipeline(request: FlinkRemotePerJobBuildRequest) extends B
       execStep(4) {
         request.developmentMode match {
           case FlinkDevelopmentMode.PYFLINK =>
-            mavenJars.foreach(
-              jar => {
-                val lfs: FsOperator = FsOperator.lfs
-                val lib = request.workspace.concat("/lib")
-                lfs.mkdirsIfNotExists(lib)
-                val originFile = new File(jar)
-                if (originFile.isFile) {
-                  lfs.copy(originFile.getAbsolutePath, lib)
-                }
+            mavenJars.foreach(jar => {
+              val lfs: FsOperator = FsOperator.lfs
+              val lib = request.workspace.concat("/lib")
+              lfs.mkdirsIfNotExists(lib)
+              val originFile = new File(jar)
+              if (originFile.isFile) {
+                lfs.copy(originFile.getAbsolutePath, lib)
+              }
 
-              })
+            })
           case _ =>
         }
       }.getOrElse(throw getError.exception)
